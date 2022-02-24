@@ -141,30 +141,39 @@ namespace DogGoMVC.Repositories
             }
         }
 
-        public void AddDogWithNull(Dog dog)
-        {
-            using (SqlConnection conn = Connection)
-            {
-                conn.Open();
-                using (SqlCommand cmd = conn.CreateCommand())
-                {
-                    cmd.CommandText = @"
-                    INSERT INTO Dog ([Name], OwnerId, Breed, Notes, ImageUrl)
-                    OUTPUT INSERTED.ID
-                    VALUES (@name, @ownerId, @breed, @notes, @imageUrl);
-                ";
+        //public void AddDogWithNull(Dog dog)
+        //{
+        //    using (SqlConnection conn = Connection)
+        //    {
+        //        conn.Open();
+        //        using (SqlCommand cmd = conn.CreateCommand())
+        //        {
+        //            cmd.CommandText = @"
+        //            INSERT INTO Dog ([Name], OwnerId, Breed, Notes, ImageUrl)
+        //            OUTPUT INSERTED.ID
+        //            VALUES (@name, @ownerId, @breed, @notes, @imageUrl);
+        //        ";
 
-                    cmd.Parameters.AddWithValue("@name", dog.Name);
-                    cmd.Parameters.AddWithValue("@ownerId", dog.OwnerId);
-                    cmd.Parameters.AddWithValue("@breed", dog.Breed);
+        //            cmd.Parameters.AddWithValue("@name", dog.Name);
+        //            cmd.Parameters.AddWithValue("@ownerId", dog.OwnerId);
+        //            cmd.Parameters.AddWithValue("@breed", dog.Breed);
+        //            if (dog.ImageUrl == null) 
+        //            {
+        //                cmd.Parameters.AddWithValue("@notes", "No notes at this time.");
+        //            }
+        //            else 
+        //            {
+        //                cmd.Parameters.AddWithValue("@notes", dog.Notes);
+        //            }
                     
+        //            cmd.Parameters.AddWithValue("@imageUrl", dog.ImageUrl);
 
-                    int id = (int)cmd.ExecuteScalar();
+        //            int id = (int)cmd.ExecuteScalar();
 
-                    dog.Id = id;
-                }
-            }
-        }
+        //            dog.Id = id;
+        //        }
+        //    }
+        //}
 
         public void AddDog(Dog dog)
         {
@@ -182,8 +191,24 @@ namespace DogGoMVC.Repositories
                     cmd.Parameters.AddWithValue("@name", dog.Name);
                     cmd.Parameters.AddWithValue("@ownerId", dog.OwnerId);
                     cmd.Parameters.AddWithValue("@breed", dog.Breed);
-                    cmd.Parameters.AddWithValue("@notes", dog.Notes);
-                    cmd.Parameters.AddWithValue("@imageUrl", dog.ImageUrl);
+                    if (dog.Notes == null)
+                    {
+                        cmd.Parameters.AddWithValue("@notes", "No notes at this time.");
+                    }
+                    else
+                    {
+                        cmd.Parameters.AddWithValue("@notes", dog.Notes);
+                    }
+
+                    if (dog.ImageUrl == null)
+                    {
+                        cmd.Parameters.AddWithValue("@imageUrl", "No Url at this time.");
+                    }
+                    else
+                    {
+                        cmd.Parameters.AddWithValue("@imageUrl", dog.ImageUrl); 
+                    }
+                    
 
                     int id = (int)cmd.ExecuteScalar();
 
