@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.Data.SqlTypes;
 
 namespace DogGoMVC.Controllers
 {
@@ -49,19 +50,19 @@ namespace DogGoMVC.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create(Dog dog)
         {
-            string.IsNullOrEmpty(dog.Notes);
+            //string.IsNullOrEmpty(dog.Notes);
             try
             {
-                if (string.IsNullOrEmpty(dog.Notes) || string.IsNullOrEmpty(dog.ImageUrl))
-                {
-                    _dogRepo.AddDogWithNull(dog);
-                    return RedirectToAction("Index");
-                }
-                else
-                {
+                //if (string.IsNullOrEmpty(dog.Notes) || string.IsNullOrEmpty(dog.ImageUrl))
+                //{
+                    //_dogRepo.AddDogWithNull(dog);
+                    //return RedirectToAction("Index");
+                //}
+                //else
+                //{
                     _dogRepo.AddDog(dog);
                     return RedirectToAction("Index");
-                };
+                //};
             }
             catch (Exception ex)
             {
