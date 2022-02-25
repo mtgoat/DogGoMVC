@@ -141,35 +141,13 @@ namespace DogGoMVC.Repositories
             }
         }
 
-        public void AddDogWithNull(Dog dog)
-        {
-            using (SqlConnection conn = Connection)
-            {
-                conn.Open();
-                using (SqlCommand cmd = conn.CreateCommand())
-                {
-                    cmd.CommandText = @"
-                    INSERT INTO Dog ([Name], OwnerId, Breed, Notes, ImageUrl)
-                    OUTPUT INSERTED.ID
-                    VALUES (@name, @ownerId, @breed, @notes, @imageUrl);
-                ";
-
-                    cmd.Parameters.AddWithValue("@name", dog.Name);
-                    cmd.Parameters.AddWithValue("@ownerId", dog.OwnerId);
-                    cmd.Parameters.AddWithValue("@breed", dog.Breed);
-                    
-
-                    int id = (int)cmd.ExecuteScalar();
-
-                    dog.Id = id;
-                }
-            }
-        }
-
         public void AddDog(Dog dog)
         {
             using (SqlConnection conn = Connection)
             {
+                string dogNotesNullComment = "No notes at this time";
+
+                string dogImageUrlNullComment = "No URL at this time";
                 conn.Open();
                 using (SqlCommand cmd = conn.CreateCommand())
                 {
@@ -182,8 +160,9 @@ namespace DogGoMVC.Repositories
                     cmd.Parameters.AddWithValue("@name", dog.Name);
                     cmd.Parameters.AddWithValue("@ownerId", dog.OwnerId);
                     cmd.Parameters.AddWithValue("@breed", dog.Breed);
-                    cmd.Parameters.AddWithValue("@notes", dog.Notes);
-                    cmd.Parameters.AddWithValue("@imageUrl", dog.ImageUrl);
+                    cmd.Parameters.AddWithValue("@notes", dogNotesNullComment ??= dog.Notes);
+                    cmd.Parameters.AddWithValue("@imageUrl", dogImageUrlNullComment ??= dog.ImageUrl);
+                    //Available in C# 8.0 and later, the null-coalescing assignment operator ??= assigns the value of its right-hand operand to its left-hand operand only if the left-hand operand evaluates to null.
 
                     int id = (int)cmd.ExecuteScalar();
 

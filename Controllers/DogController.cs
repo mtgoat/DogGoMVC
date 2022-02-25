@@ -49,20 +49,12 @@ namespace DogGoMVC.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create(Dog dog)
         {
-            string.IsNullOrEmpty(dog.Notes);
             try
             {
-                if (string.IsNullOrEmpty(dog.Notes) || string.IsNullOrEmpty(dog.ImageUrl))
-                {
-                    _dogRepo.AddDogWithNull(dog);
+                 _dogRepo.AddDog(dog);
                     return RedirectToAction("Index");
                 }
-                else
-                {
-                    _dogRepo.AddDog(dog);
-                    return RedirectToAction("Index");
-                };
-            }
+                
             catch (Exception ex)
             {
                 return View(dog);
