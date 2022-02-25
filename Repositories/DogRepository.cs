@@ -141,40 +141,6 @@ namespace DogGoMVC.Repositories
             }
         }
 
-        //public void AddDogWithNull(Dog dog)
-        //{
-        //    using (SqlConnection conn = Connection)
-        //    {
-        //        conn.Open();
-        //        using (SqlCommand cmd = conn.CreateCommand())
-        //        {
-        //            cmd.CommandText = @"
-        //            INSERT INTO Dog ([Name], OwnerId, Breed, Notes, ImageUrl)
-        //            OUTPUT INSERTED.ID
-        //            VALUES (@name, @ownerId, @breed, @notes, @imageUrl);
-        //        ";
-
-        //            cmd.Parameters.AddWithValue("@name", dog.Name);
-        //            cmd.Parameters.AddWithValue("@ownerId", dog.OwnerId);
-        //            cmd.Parameters.AddWithValue("@breed", dog.Breed);
-        //            if (dog.ImageUrl == null) 
-        //            {
-        //                cmd.Parameters.AddWithValue("@notes", "No notes at this time.");
-        //            }
-        //            else 
-        //            {
-        //                cmd.Parameters.AddWithValue("@notes", dog.Notes);
-        //            }
-                    
-        //            cmd.Parameters.AddWithValue("@imageUrl", dog.ImageUrl);
-
-        //            int id = (int)cmd.ExecuteScalar();
-
-        //            dog.Id = id;
-        //        }
-        //    }
-        //}
-
         public void AddDog(Dog dog)
         {
             using (SqlConnection conn = Connection)
@@ -182,40 +148,34 @@ namespace DogGoMVC.Repositories
                 conn.Open();
                 using (SqlCommand cmd = conn.CreateCommand())
                 {
+                    string dogNotesNullComment = "No notes at this time";
+                    string dogImageURLNullComment = "No URL at this time";
+
                     cmd.CommandText = @"
                     INSERT INTO Dog ([Name], OwnerId, Breed, Notes, ImageUrl)
                     OUTPUT INSERTED.ID
                     VALUES (@name, @ownerId, @breed, @notes, @imageUrl);
                 ";
 
+
                     cmd.Parameters.AddWithValue("@name", dog.Name);
                     cmd.Parameters.AddWithValue("@ownerId", dog.OwnerId);
                     cmd.Parameters.AddWithValue("@breed", dog.Breed);
-                    if (dog.Notes == null)
-                    {
-                        cmd.Parameters.AddWithValue("@notes", "No notes at this time.");
-                    }
-                    else
-                    {
-                        cmd.Parameters.AddWithValue("@notes", dog.Notes);
-                    }
-
-                    if (dog.ImageUrl == null)
-                    {
-                        cmd.Parameters.AddWithValue("@imageUrl", "No Url at this time.");
-                    }
-                    else
-                    {
-                        cmd.Parameters.AddWithValue("@imageUrl", dog.ImageUrl); 
-                    }
-                    
-
+                    cmd.Parameters.AddWithValue("@notes", dog.Notes ??= dogNotesNullComment);
+                    cmd.Parameters.AddWithValue("@imageUrl", dog.ImageUrl ??= dogImageURLNullComment) ;
+                    //Available in C# 8.0 and later, the null-coalescing assignment operator ??= assigns the value of its right-hand operand to its left-hand operand only if the left-hand operand evaluates to null. The ??= operator doesn't evaluate its right-hand operand if the left-hand operand evaluates to non-null.
                     int id = (int)cmd.ExecuteScalar();
-
-                    dog.Id = id;
-                }
+               dog.Id = id; 
+                
+                }                         
+               
             }
         }
+
+       
+                    
+
+
 
 
     }

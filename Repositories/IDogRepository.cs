@@ -10,6 +10,6 @@ namespace DogGoMVC.Repositories
         Dog GetDogById(int id);
 
         void AddDog(Dog dog);
-        void AddDogWithNull(Dog dog);
+        
     }
 }
