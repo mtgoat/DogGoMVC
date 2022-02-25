@@ -145,31 +145,37 @@ namespace DogGoMVC.Repositories
         {
             using (SqlConnection conn = Connection)
             {
-                string dogNotesNullComment = "No notes at this time";
-
-                string dogImageUrlNullComment = "No URL at this time";
                 conn.Open();
                 using (SqlCommand cmd = conn.CreateCommand())
                 {
+                    string dogNotesNullComment = "No notes at this time";
+                    string dogImageURLNullComment = "No URL at this time";
+
                     cmd.CommandText = @"
                     INSERT INTO Dog ([Name], OwnerId, Breed, Notes, ImageUrl)
                     OUTPUT INSERTED.ID
                     VALUES (@name, @ownerId, @breed, @notes, @imageUrl);
                 ";
 
+
                     cmd.Parameters.AddWithValue("@name", dog.Name);
                     cmd.Parameters.AddWithValue("@ownerId", dog.OwnerId);
                     cmd.Parameters.AddWithValue("@breed", dog.Breed);
-                    cmd.Parameters.AddWithValue("@notes", dogNotesNullComment ??= dog.Notes);
-                    cmd.Parameters.AddWithValue("@imageUrl", dogImageUrlNullComment ??= dog.ImageUrl);
-                    //Available in C# 8.0 and later, the null-coalescing assignment operator ??= assigns the value of its right-hand operand to its left-hand operand only if the left-hand operand evaluates to null.
-
+                    cmd.Parameters.AddWithValue("@notes", dogNotesNullComment ??=dog.Notes);
+                    cmd.Parameters.AddWithValue("@imageUrl", dogImageURLNullComment ??=dog.ImageUrl);
+                    //Available in C# 8.0 and later, the null-coalescing assignment operator ??= assigns the value of its right-hand operand to its left-hand operand only if the left-hand operand evaluates to null. The ??= operator doesn't evaluate its right-hand operand if the left-hand operand evaluates to non-null.
                     int id = (int)cmd.ExecuteScalar();
-
-                    dog.Id = id;
-                }
+               dog.Id = id; 
+                
+                }                         
+               
             }
         }
+
+       
+                    
+
+
 
 
     }

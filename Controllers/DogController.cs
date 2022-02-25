@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.Data.SqlTypes;
 
 namespace DogGoMVC.Controllers
 {
@@ -52,9 +53,10 @@ namespace DogGoMVC.Controllers
             try
             {
                  _dogRepo.AddDog(dog);
+
                     return RedirectToAction("Index");
-                }
                 
+            }
             catch (Exception ex)
             {
                 return View(dog);
