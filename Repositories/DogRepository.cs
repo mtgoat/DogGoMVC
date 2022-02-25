@@ -77,7 +77,7 @@ namespace DogGoMVC.Repositories
             }
         }
 
-        public Dog GetDogById(int id)
+        public List<Dog> GetDogsByOwnerId(int ownerId)
         {
             using (SqlConnection conn = Connection)
             {
@@ -86,57 +86,41 @@ namespace DogGoMVC.Repositories
                 using (SqlCommand cmd = conn.CreateCommand())
                 {
                     cmd.CommandText = @"
+                SELECT Id, Name, Breed, Notes, ImageUrl, OwnerId 
+                FROM Dog
+                WHERE OwnerId = @ownerId
+            ";
 
-                     SELECT Id, [Name], OwnerId, Breed, Notes, ImageUrl
-                        FROM Dog
-                        WHERE Id = @id"; 
-
-                    cmd.Parameters.AddWithValue("@id", id);
+                    cmd.Parameters.AddWithValue("@ownerId", ownerId);
 
                     SqlDataReader reader = cmd.ExecuteReader();
 
-                    if (reader.Read())
+                    List<Dog> dogs = new List<Dog>();
+
+                    while (reader.Read())
                     {
-                        try
+                        Dog dog = new Dog()
                         {
-                            Dog dog = new Dog
-                            {
-                                Id = reader.GetInt32(reader.GetOrdinal("Id")),
-                                Name = reader.GetString(reader.GetOrdinal("Name")),
-                                OwnerId = reader.GetInt32(reader.GetOrdinal("OwnerId")),
-                                Breed = reader.GetString(reader.GetOrdinal("Breed")),
-                                Notes = reader.GetString(reader.GetOrdinal("Notes")),
-                                ImageUrl = reader.GetString(reader.GetOrdinal("ImageUrl"))
+                            Id = reader.GetInt32(reader.GetOrdinal("Id")),
+                            Name = reader.GetString(reader.GetOrdinal("Name")),
+                            Breed = reader.GetString(reader.GetOrdinal("Breed")),
+                            OwnerId = reader.GetInt32(reader.GetOrdinal("OwnerId"))
+                        };
 
-                            };
-
-                                reader.Close();
-                                return dog;
-                        }
-                        catch (SqlNullValueException ex)
+                        // Check if optional columns are null
+                        if (reader.IsDBNull(reader.GetOrdinal("Notes")) == false)
                         {
-                            Dog dog = new Dog
-                            {
-                                Id = reader.GetInt32(reader.GetOrdinal("Id")),
-                                Name = reader.GetString(reader.GetOrdinal("Name")),
-                                OwnerId = reader.GetInt32(reader.GetOrdinal("OwnerId")),
-                                Breed = reader.GetString(reader.GetOrdinal("Breed")),
-                                Notes = "No Notes",
-                                ImageUrl = "No ImageUrl"
-                            };
-
-                            reader.Close();
-                            return dog;
+                            dog.Notes = reader.GetString(reader.GetOrdinal("Notes"));
                         }
-                    }
-                    else
-                    {
-                       
-                        reader.Close();
-                        return null;
-                    }
+                        if (reader.IsDBNull(reader.GetOrdinal("ImageUrl")) == false)
+                        {
+                            dog.ImageUrl = reader.GetString(reader.GetOrdinal("ImageUrl"));
+                        }
 
-
+                        dogs.Add(dog);
+                    }
+                    reader.Close();
+                    return dogs;
                 }
             }
         }
@@ -172,8 +156,70 @@ namespace DogGoMVC.Repositories
             }
         }
 
-       
-                    
+        public Dog GetDogById(int id)
+        {
+            using (SqlConnection conn = Connection)
+            {
+                conn.Open();
+
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"
+
+                     SELECT Id, [Name], OwnerId, Breed, Notes, ImageUrl
+                        FROM Dog
+                        WHERE Id = @id";
+
+                    cmd.Parameters.AddWithValue("@id", id);
+
+                    SqlDataReader reader = cmd.ExecuteReader();
+
+                    if (reader.Read())
+                    {
+                        try
+                        {
+                            Dog dog = new Dog
+                            {
+                                Id = reader.GetInt32(reader.GetOrdinal("Id")),
+                                Name = reader.GetString(reader.GetOrdinal("Name")),
+                                OwnerId = reader.GetInt32(reader.GetOrdinal("OwnerId")),
+                                Breed = reader.GetString(reader.GetOrdinal("Breed")),
+                                Notes = reader.GetString(reader.GetOrdinal("Notes")),
+                                ImageUrl = reader.GetString(reader.GetOrdinal("ImageUrl"))
+
+                            };
+
+                            reader.Close();
+                            return dog;
+                        }
+                        catch (SqlNullValueException ex)
+                        {
+                            Dog dog = new Dog
+                            {
+                                Id = reader.GetInt32(reader.GetOrdinal("Id")),
+                                Name = reader.GetString(reader.GetOrdinal("Name")),
+                                OwnerId = reader.GetInt32(reader.GetOrdinal("OwnerId")),
+                                Breed = reader.GetString(reader.GetOrdinal("Breed")),
+                                Notes = "No Notes",
+                                ImageUrl = "No ImageUrl"
+                            };
+
+                            reader.Close();
+                            return dog;
+                        }
+                    }
+                    else
+                    {
+
+                        reader.Close();
+                        return null;
+                    }
+
+
+                }
+            }
+        }
+
 
 
 
