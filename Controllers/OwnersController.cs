@@ -116,11 +116,7 @@ namespace DogGoMVC.Controllers
             };
             
 
-            if (owner == null)
-            {
-                return NotFound();
-            }
-            return View(owner);
+            return View(vm);
         }
 
         // POST: OwnersController/Edit/5
