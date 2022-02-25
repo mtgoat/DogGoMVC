@@ -161,8 +161,8 @@ namespace DogGoMVC.Repositories
                     cmd.Parameters.AddWithValue("@name", dog.Name);
                     cmd.Parameters.AddWithValue("@ownerId", dog.OwnerId);
                     cmd.Parameters.AddWithValue("@breed", dog.Breed);
-                    cmd.Parameters.AddWithValue("@notes", dogNotesNullComment ??=dog.Notes);
-                    cmd.Parameters.AddWithValue("@imageUrl", dogImageURLNullComment ??=dog.ImageUrl);
+                    cmd.Parameters.AddWithValue("@notes", dog.Notes ??= dogNotesNullComment);
+                    cmd.Parameters.AddWithValue("@imageUrl", dog.ImageUrl ??= dogImageURLNullComment) ;
                     //Available in C# 8.0 and later, the null-coalescing assignment operator ??= assigns the value of its right-hand operand to its left-hand operand only if the left-hand operand evaluates to null. The ??= operator doesn't evaluate its right-hand operand if the left-hand operand evaluates to non-null.
                     int id = (int)cmd.ExecuteScalar();
                dog.Id = id; 
