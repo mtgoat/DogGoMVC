@@ -1,5 +1,6 @@
 ﻿using DogGoMVC.Models;
 using DogGoMVC.Repositories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -20,6 +21,7 @@ namespace DogGoMVC.Controllers
         }
 
         // GET: DogController
+        [Authorize]
         public ActionResult Index()
         {
             int ownerId = GetCurrentUserId();
@@ -31,6 +33,7 @@ namespace DogGoMVC.Controllers
         }
 
         // GET: DogController/Details/5
+        [Authorize]
         public ActionResult Details(int id)
         {
             Dog dog = _dogRepo.GetDogById(id);
@@ -43,19 +46,23 @@ namespace DogGoMVC.Controllers
         }
 
         // GET: DogController/Create
+        [Authorize]
         public ActionResult Create()
         {
             return View();
         }
 
         // POST: DogController/Create
+        [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Create(Dog dog)
         {
             try
             {
-                 _dogRepo.AddDog(dog);
+                // update the dogs OwnerId to the current user's Id 
+                dog.OwnerId = GetCurrentUserId();
+                _dogRepo.AddDog(dog);
 
                     return RedirectToAction("Index");
                 
@@ -67,6 +74,7 @@ namespace DogGoMVC.Controllers
         }
 
         // GET: DogController/Edit/5
+        [Authorize]
         public ActionResult Edit(int id)
         {
             Dog dog = _dogRepo.GetDogById(id);
@@ -79,6 +87,7 @@ namespace DogGoMVC.Controllers
         }
 
         // POST: DogController/Edit/5
+        [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Edit(int id, Owner owner)
@@ -94,12 +103,14 @@ namespace DogGoMVC.Controllers
         }
 
         // GET: DogController/Delete/5
+        [Authorize]
         public ActionResult Delete(int id)
         {
             return View();
         }
 
         // POST: DogController/Delete/5
+        [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Delete(int id, IFormCollection collection)
