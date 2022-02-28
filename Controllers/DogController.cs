@@ -125,8 +125,8 @@ namespace DogGoMVC.Controllers
         }
 
  
-// POST: DogController/Delete/5
-[Authorize]
+        // POST: DogController/Delete/5
+        [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Delete(int id, Dog dog)
