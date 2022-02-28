@@ -193,10 +193,14 @@ namespace DogGoMVC.Controllers
                 return View(owner);
             }
         }
-    
-    
-    
-    
-    
+
+        private int GetCurrentUserId()
+        {
+            string id = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            return int.Parse(id);
+        }
+
+
+
     }
 }
