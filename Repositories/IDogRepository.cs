@@ -10,6 +10,10 @@ namespace DogGoMVC.Repositories
         Dog GetDogById(int id);
         List<Dog> GetDogsByOwnerId(int ownerId);
         void AddDog(Dog dog);
-        
+        public void UpdateDog(Dog dog);
+
+        void DeleteDog(int dogId);
+
+
     }
 }
