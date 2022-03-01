@@ -4,6 +4,7 @@ using DogGoMVC.Repositories;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
+using System.Data.SqlTypes;
 using System.Linq;
 using System.Security.Claims;
 
@@ -24,21 +25,34 @@ namespace DogGoMVC.Controllers
         // GET: WalkersController
         public ActionResult Index()
         {
-            //variable to get currentID user
-            int currentOwnerId = GetCurrentUserId(); 
-            //getownerid 
-            Owner owner = _ownerRepo.GetOwnerById(currentOwnerId);
+                //variable to get currentID user
+                int currentOwnerId = GetCurrentUserId();
+
+            //if no one signed in, the GetCurrentUserId is set to -0. See the GetCurrentUserId at the bottom
+            if (currentOwnerId != -0)
+            {
+                //get owners by the current ownerId 
+                Owner owner = _ownerRepo.GetOwnerById(currentOwnerId);
 
 
-            List<Walker> walkers = _walkerRepo.GetAllWalkers();
+                List<Walker> walkers = _walkerRepo.GetAllWalkers();
 
-            //filtering all walkers to only walkers with the same nighb id as the owner.nighb id
+                //filtering all walkers to only walkers with the same neighb id as the owner.neighb id
 
-            List<Walker> NeightWalkers = walkers.Where( w => w.NeighborhoodId == owner.NeighborhoodId).ToList();
+                List<Walker> NeightWalkers = walkers.Where(w => w.NeighborhoodId == owner.NeighborhoodId).ToList();
 
 
-            //if 
-            return View(NeightWalkers);
+
+                return View(NeightWalkers);
+            }
+            else
+            {
+
+                List<Walker> walkers = _walkerRepo.GetAllWalkers();
+                return View(walkers);
+
+            }
+            
         }
 
         // GET: WalkersController/Details/5
@@ -118,7 +132,7 @@ namespace DogGoMVC.Controllers
         private int GetCurrentUserId()
         {
             string id = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            return int.Parse(id);
+            return int.Parse(id?? "-0");
         }
 
     }
